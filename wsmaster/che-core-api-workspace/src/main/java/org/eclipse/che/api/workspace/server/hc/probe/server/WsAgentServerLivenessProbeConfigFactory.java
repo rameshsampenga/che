@@ -14,6 +14,7 @@ import static java.util.Collections.singletonMap;
 
 import java.net.URI;
 import javax.inject.Inject;
+import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriBuilderException;
@@ -59,10 +60,12 @@ public class WsAgentServerLivenessProbeConfigFactory implements HttpProbeConfigF
       }
 
       return new HttpProbeConfig(
+          HttpMethod.OPTIONS,
           port,
           uri.getHost(),
           uri.getScheme(),
           uri.getPath(),
+          200,
           singletonMap(HttpHeaders.AUTHORIZATION, machineTokenProvider.getToken(workspaceId)),
           successThreshold,
           3,

@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class HttpProbeFactory extends ProbeFactory {
   private final URL url;
+  private final String method;
+  private final int expectedStatus;
   private final int timeout;
   private final Map<String, String> headers;
   private final HttpProbeConfig probeConfig;
@@ -39,6 +41,8 @@ public class HttpProbeFactory extends ProbeFactory {
             probeConfig.getPath());
     timeout = (int) TimeUnit.SECONDS.toMillis(probeConfig.getTimeoutSeconds());
     headers = probeConfig.getHeaders();
+    method = probeConfig.getMethod();
+    expectedStatus = probeConfig.getExpectedStatus();
     this.probeConfig = probeConfig;
   }
 
@@ -49,6 +53,6 @@ public class HttpProbeFactory extends ProbeFactory {
 
   @Override
   public HttpProbe get() {
-    return new HttpProbe(url, timeout, headers);
+    return new HttpProbe(method, url, expectedStatus, timeout, headers);
   }
 }

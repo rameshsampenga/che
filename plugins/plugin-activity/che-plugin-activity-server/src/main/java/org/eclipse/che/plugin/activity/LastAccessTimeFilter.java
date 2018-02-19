@@ -19,6 +19,8 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.HttpMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class LastAccessTimeFilter implements Filter {
+
   private static final Logger LOG = LoggerFactory.getLogger(LastAccessTimeFilter.class);
 
   private final WorkspaceActivityNotifier wsActivityEventSender;
@@ -39,13 +42,16 @@ public class LastAccessTimeFilter implements Filter {
   }
 
   @Override
-  public void init(FilterConfig filterConfig) throws ServletException {}
+  public void init(FilterConfig filterConfig) throws ServletException {
+  }
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
     try {
-      wsActivityEventSender.onActivity();
+      if (!((HttpServletRequest)request).getMethod().equalsIgnoreCase(HttpMethod.OPTIONS)) {
+        wsActivityEventSender.onActivity();
+      }
     } catch (Exception e) {
       LOG.error("Failed to notify about the workspace activity", e);
     } finally {
@@ -54,5 +60,6 @@ public class LastAccessTimeFilter implements Filter {
   }
 
   @Override
-  public void destroy() {}
+  public void destroy() {
+  }
 }

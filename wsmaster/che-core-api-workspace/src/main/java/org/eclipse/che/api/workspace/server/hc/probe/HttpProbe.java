@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Probes a HTTP(s) URL for a response with code >=200 and <400
+ * Probes a HTTP(s) URL for a response with expected code
  *
  * @author Alexander Garagatyi
  */
@@ -26,7 +26,9 @@ public class HttpProbe extends Probe {
   private static final String CONNECTION_HEADER = "Connection";
   private static final String CONNECTION_CLOSE = "close";
 
+  private String method;
   private final URL url;
+  private int expectedCode;
   private final int timeout;
   private final Map<String, String> headers;
 
@@ -38,8 +40,11 @@ public class HttpProbe extends Probe {
    * @param url HTTP endpoint to probe
    * @param timeout connection and read timeouts
    */
-  public HttpProbe(URL url, int timeout, Map<String, String> headers) {
+  public HttpProbe(
+      String method, URL url, int expectedCode, int timeout, Map<String, String> headers) {
+    this.method = method;
     this.url = url;
+    this.expectedCode = expectedCode;
     this.timeout = timeout;
     this.headers = new HashMap<>();
     if (headers != null) {
@@ -53,6 +58,7 @@ public class HttpProbe extends Probe {
     try {
       httpURLConnection = (HttpURLConnection) url.openConnection();
       httpURLConnection.setConnectTimeout(timeout);
+      httpURLConnection.setRequestMethod(method);
       httpURLConnection.setReadTimeout(timeout);
       headers.forEach((name, value) -> httpURLConnection.setRequestProperty(name, value));
       return isConnectionSuccessful(httpURLConnection);
@@ -78,7 +84,7 @@ public class HttpProbe extends Probe {
   private boolean isConnectionSuccessful(HttpURLConnection conn) {
     try {
       int responseCode = conn.getResponseCode();
-      return responseCode >= 200 && responseCode < 400;
+      return responseCode == this.expectedCode;
     } catch (IOException e) {
       return false;
     }

@@ -12,6 +12,7 @@ package org.eclipse.che.api.workspace.server.hc.probe.server;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.ws.rs.HttpMethod;
 import org.eclipse.che.api.core.model.workspace.runtime.Server;
 import org.eclipse.che.api.workspace.server.hc.probe.HttpProbeConfig;
 import org.eclipse.che.api.workspace.server.spi.InternalInfrastructureException;
@@ -58,6 +59,17 @@ public class TerminalServerLivenessProbeConfigFactory implements HttpProbeConfig
     String path = uri.getPath().replaceFirst("/pty$", "/liveness");
 
     return new HttpProbeConfig(
-        port, uri.getHost(), protocol, path, null, successThreshold, 3, 120, 10, 10);
+        HttpMethod.GET,
+        port,
+        uri.getHost(),
+        protocol,
+        path,
+        200,
+        null,
+        successThreshold,
+        3,
+        120,
+        10,
+        10);
   }
 }

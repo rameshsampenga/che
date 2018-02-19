@@ -23,6 +23,8 @@ public class HttpProbeConfig extends TcpProbeConfig {
 
   private final String scheme;
   private final String path;
+  private final String method;
+  private final int expectedStatus;
   private final Map<String, String> headers;
 
   /**
@@ -34,10 +36,12 @@ public class HttpProbeConfig extends TcpProbeConfig {
    * @see TcpProbeConfig#TcpProbeConfig(int, int, int, int, int, int, String)
    */
   public HttpProbeConfig(
+      String method,
       int port,
       String host,
       String scheme,
       String path,
+      int expectedStatus,
       Map<String, String> headers,
       int successThreshold,
       int failureThreshold,
@@ -56,6 +60,8 @@ public class HttpProbeConfig extends TcpProbeConfig {
       throw new IllegalArgumentException("HTTP probe scheme must be 'http' or 'https'");
     }
     this.scheme = scheme;
+    this.method = method;
+    this.expectedStatus = expectedStatus;
     this.path = path;
     this.headers = headers != null ? headers : emptyMap();
   }
@@ -70,5 +76,13 @@ public class HttpProbeConfig extends TcpProbeConfig {
 
   public Map<String, String> getHeaders() {
     return headers;
+  }
+
+  public String getMethod() {
+    return method;
+  }
+
+  public int getExpectedStatus() {
+    return expectedStatus;
   }
 }
