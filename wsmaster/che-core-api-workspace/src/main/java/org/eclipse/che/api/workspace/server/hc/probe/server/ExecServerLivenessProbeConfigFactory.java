@@ -12,7 +12,6 @@ package org.eclipse.che.api.workspace.server.hc.probe.server;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.ws.rs.HttpMethod;
 import org.eclipse.che.api.core.model.workspace.runtime.Server;
 import org.eclipse.che.api.workspace.server.hc.probe.HttpProbeConfig;
 import org.eclipse.che.api.workspace.server.spi.InternalInfrastructureException;
@@ -35,12 +34,10 @@ public class ExecServerLivenessProbeConfigFactory implements HttpProbeConfigFact
     try {
       URL url = new URL(server.getUrl());
       return new HttpProbeConfig(
-          HttpMethod.GET,
           url.getPort() == -1 ? url.getDefaultPort() : url.getPort(),
           url.getHost(),
           url.getProtocol(),
           url.getPath().replaceFirst("/process$", "/liveness"),
-          200,
           null,
           successThreshold,
           3,

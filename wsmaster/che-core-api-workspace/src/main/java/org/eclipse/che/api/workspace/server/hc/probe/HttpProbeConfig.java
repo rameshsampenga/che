@@ -13,6 +13,7 @@ package org.eclipse.che.api.workspace.server.hc.probe;
 import static java.util.Collections.emptyMap;
 
 import java.util.Map;
+import javax.ws.rs.HttpMethod;
 
 /**
  * Configuration of a HTTP URL probe.
@@ -27,14 +28,30 @@ public class HttpProbeConfig extends TcpProbeConfig {
   private final int expectedStatus;
   private final Map<String, String> headers;
 
-  /**
-   * Creates probe configuration.
-   *
-   * @param scheme protocol of the HTTP server (http or https)
-   * @param path path for the HTTP probe
-   * @param headers optional headers to add into the HTTP probe request
-   * @see TcpProbeConfig#TcpProbeConfig(int, int, int, int, int, int, String)
-   */
+
+  public HttpProbeConfig(
+      int port,
+      String host,
+      String scheme,
+      String path,
+      Map<String, String> headers,
+      int successThreshold,
+      int failureThreshold,
+      int timeoutSeconds,
+      int periodSeconds,
+      int initialDelaySeconds) {
+    this(HttpMethod.GET, port, host, scheme, path, 200, headers, successThreshold, failureThreshold,
+        timeoutSeconds, periodSeconds, initialDelaySeconds);
+  }
+
+    /**
+     * Creates probe configuration.
+     *
+     * @param scheme protocol of the HTTP server (http or https)
+     * @param path path for the HTTP probe
+     * @param headers optional headers to add into the HTTP probe request
+     * @see TcpProbeConfig#TcpProbeConfig(int, int, int, int, int, int, String)
+     */
   public HttpProbeConfig(
       String method,
       int port,
